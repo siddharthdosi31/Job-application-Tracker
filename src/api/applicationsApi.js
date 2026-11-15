@@ -31,3 +31,50 @@ export const getApplications = async ({
 
   return { data, total };
 };
+export const getApplicationById = async (id) => {
+  const response = await fetch(`${BASE_URL}/applications/${id}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch application details");
+  }
+
+  return response.json();
+};
+// Update an existing application
+export const updateApplication = async ({
+  id,
+  updates,
+  currentApplication,
+}) => {
+  const now = new Date().toISOString();
+
+  const updatedData = {
+    ...updates,
+    updatedAt: now,
+  };
+
+  // Add a new status history entry only when the status changes
+  if (updates.status && updates.status !== currentApplication.status) {
+    updatedData.statusHistory = [
+      ...(currentApplication.statusHistory || []),
+      {
+        status: updates.status,
+        changedAt: now,
+      },
+    ];
+  }
+
+  const response = await fetch(`${BASE_URL}/applications/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedData),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update application");
+  }
+
+  return response.json();
+};

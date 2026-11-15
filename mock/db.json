@@ -29,7 +29,7 @@
     {
       "id": 2,
       "company": "Lumen Analytics",
-      "role": "Software Engineer - Web",
+      "role": "Software Engineer ",
       "jobUrl": "https://careers.example.com/lumen-analytics/jobs/1002",
       "status": "wishlist",
       "dateApplied": null,
@@ -46,7 +46,7 @@
         }
       ],
       "createdAt": "2026-08-07T10:45:00Z",
-      "updatedAt": "2026-08-07T10:45:00Z"
+      "updatedAt": "2026-11-15T10:13:14.133Z"
     },
     {
       "id": 3,
