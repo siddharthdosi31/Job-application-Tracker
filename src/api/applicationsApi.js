@@ -5,6 +5,8 @@ export const getApplications = async ({
   q = "",
   status = "",
   page = 1,
+  sortBy = "dateApplied",
+  order = "desc",
 } = {}) => {
   const params = new URLSearchParams();
 
@@ -13,6 +15,8 @@ export const getApplications = async ({
 
   params.set("_page", page);
   params.set("_limit", PAGE_LIMIT);
+  params.set("_sort", sortBy);
+  params.set("_order", order);
 
   const response = await fetch(
     `${BASE_URL}/applications?${params.toString()}`
