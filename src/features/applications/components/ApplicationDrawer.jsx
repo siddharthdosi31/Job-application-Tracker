@@ -1,9 +1,10 @@
 
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { X, Save } from "lucide-react";
 import { fetchApplicationById, updateApplicationById } from "../applicationsSlice";
 import useForm from "../../../hooks/useForm";
+import ApplicationForm from "./ApplicationForm";
 
 const emptyValues = {
     company: "",
@@ -78,8 +79,10 @@ function ApplicationDrawer({ applicationId, onClose }) {
 
             const updates = {
                 ...values,
-                salaryMin: values.salaryMin === "" ? null : Number(values.salaryMin),
-                salaryMax: values.salaryMax === "" ? null : Number(values.salaryMax),
+                salaryMin:
+                    values.salaryMin === "" ? null : Number(values.salaryMin),
+                salaryMax:
+                    values.salaryMax === "" ? null : Number(values.salaryMax),
                 dateApplied:
                     values.status === "wishlist" ? null : values.dateApplied || null,
             };
@@ -124,21 +127,6 @@ function ApplicationDrawer({ applicationId, onClose }) {
         }
     }, [applicationDetails, applicationId]);
 
-    // Close drawer with Escape
-    useEffect(() => {
-        const handleKeyDown = (event) => {
-            if (event.key === "Escape") {
-                handleClose();
-            }
-        };
-
-        document.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            document.removeEventListener("keydown", handleKeyDown);
-        };
-    });
-
     const hasUnsavedChanges =
         JSON.stringify(form.values) !==
         JSON.stringify({
@@ -155,7 +143,7 @@ function ApplicationDrawer({ applicationId, onClose }) {
             notes: applicationDetails?.notes || "",
         });
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         if (detailsStatus !== "succeeded" || !applicationDetails) {
             onClose();
             return;
@@ -170,31 +158,22 @@ function ApplicationDrawer({ applicationId, onClose }) {
         }
 
         onClose();
-    };
+    }, [detailsStatus, applicationDetails, hasUnsavedChanges, onClose]);
 
-    const inputClass =
-        "w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
+    // Close drawer with Escape
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") {
+                handleClose();
+            }
+        };
 
-    const renderField = (name, label, type = "text") => (
-        <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                {label}
-            </label>
+        document.addEventListener("keydown", handleKeyDown);
 
-            <input
-                type={type}
-                name={name}
-                value={form.values[name]}
-                onChange={form.handleChange}
-                onBlur={form.handleBlur}
-                className={inputClass}
-            />
-
-            {form.touched[name] && form.errors[name] && (
-                <p className="mt-1 text-xs text-red-600">{form.errors[name]}</p>
-            )}
-        </div>
-    );
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [handleClose]);
 
     return (
         <div
@@ -206,6 +185,7 @@ function ApplicationDrawer({ applicationId, onClose }) {
             }}
         >
             <aside className="absolute right-0 top-0 flex h-full w-full max-w-xl flex-col bg-white shadow-2xl">
+
                 {/* Drawer Header */}
                 <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
                     <div>
@@ -235,7 +215,9 @@ function ApplicationDrawer({ applicationId, onClose }) {
                 ) : detailsStatus === "failed" ? (
                     <div className="p-6">
                         <p className="text-sm text-red-600">{detailsError}</p>
+
                         <button
+                            type="button"
                             onClick={() => dispatch(fetchApplicationById(applicationId))}
                             className="mt-3 text-sm font-semibold text-indigo-600 hover:underline"
                         >
@@ -248,148 +230,15 @@ function ApplicationDrawer({ applicationId, onClose }) {
                             onSubmit={form.handleSubmit}
                             className="flex-1 space-y-5 overflow-y-auto px-6 py-5"
                         >
-                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                {renderField("company", "Company *")}
-                                {renderField("role", "Job role *")}
-                            </div>
-
-                            {renderField("jobUrl", "Job URL", "url")}
-
-                            <div>
-                                <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                                    Status
-                                </label>
-                                <select
-                                    name="status"
-                                    value={form.values.status}
-                                    onChange={(event) => {
-                                        form.handleChange(event);
-
-                                        if (event.target.value === "wishlist") {
-                                            form.resetForm({
-                                                ...form.values,
-                                                status: "wishlist",
-                                                dateApplied: "",
-                                            });
-                                        }
-                                    }}
-                                    onBlur={form.handleBlur}
-                                    className={inputClass}
-                                >
-                                    <option value="wishlist">Wishlist</option>
-                                    <option value="applied">Applied</option>
-                                    <option value="interview">Interview</option>
-                                    <option value="offer">Offer</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                            </div>
-
-                            {renderField("dateApplied", "Date applied", "date")}
-
-                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                {renderField("salaryMin", "Minimum salary", "number")}
-                                {renderField("salaryMax", "Maximum salary", "number")}
-                            </div>
-
-                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div>
-                                    <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                                        Currency
-                                    </label>
-                                    <select
-                                        name="currency"
-                                        value={form.values.currency}
-                                        onChange={form.handleChange}
-                                        className={inputClass}
-                                    >
-                                        <option value="INR">INR</option>
-                                        <option value="USD">USD</option>
-                                        <option value="EUR">EUR</option>
-                                        <option value="GBP">GBP</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                                        Location type
-                                    </label>
-                                    <select
-                                        name="locationType"
-                                        value={form.values.locationType}
-                                        onChange={form.handleChange}
-                                        className={inputClass}
-                                    >
-                                        <option value="onsite">Onsite</option>
-                                        <option value="hybrid">Hybrid</option>
-                                        <option value="remote">Remote</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            {renderField("location", "Location")}
-
-                            <div>
-                                <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                                    Notes
-                                </label>
-                                <textarea
-                                    name="notes"
-                                    rows={4}
-                                    value={form.values.notes}
-                                    onChange={form.handleChange}
-                                    onBlur={form.handleBlur}
-                                    className={inputClass}
-                                />
-                            </div>
-
-                            {/* Status History */}
-                            <div className="border-t border-gray-200 pt-5">
-                                <h3 className="mb-4 font-semibold text-gray-900">
-                                    Status History
-                                </h3>
-
-                                {applicationDetails.statusHistory?.length ? (
-                                    <div className="space-y-4">
-                                        {applicationDetails.statusHistory.map((entry, index) => (
-                                            <div key={`${entry.changedAt}-${index}`}>
-                                                <p className="text-sm font-medium capitalize text-gray-800">
-                                                    {entry.status}
-                                                </p>
-                                                <p className="text-xs text-gray-500">
-                                                    {entry.changedAt
-                                                        ? new Date(entry.changedAt).toLocaleString("en-IN")
-                                                        : "-"}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className="text-sm text-gray-500">
-                                        No status history available.
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="border-t border-gray-200 pt-4 text-xs text-gray-500">
-                                <p>
-                                    <p>
-                                        Application ID: {applicationDetails.id}
-                                    </p>
-                                    Created:{" "}
-                                    {applicationDetails.createdAt
-                                        ? new Date(applicationDetails.createdAt).toLocaleString("en-IN")
-                                        : "-"}
-                                </p>
-                                <p className="mt-1">
-                                    Last updated:{" "}
-                                    {applicationDetails.updatedAt
-                                        ? new Date(applicationDetails.updatedAt).toLocaleString("en-IN")
-                                        : "-"}
-                                </p>
-                            </div>
+                            <ApplicationForm
+                                form={form}
+                                applicationDetails={applicationDetails}
+                            />
 
                             {updateStatus === "failed" && (
-                                <p className="text-sm text-red-600">{updateError}</p>
+                                <p className="text-sm text-red-600">
+                                    {updateError}
+                                </p>
                             )}
                         </form>
 

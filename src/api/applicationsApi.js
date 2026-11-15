@@ -78,3 +78,33 @@ export const updateApplication = async ({
 
   return response.json();
 };
+// Create a new application
+export const createApplication = async (applicationData) => {
+  const now = new Date().toISOString();
+
+  const newApplication = {
+    ...applicationData,
+    statusHistory: [
+      {
+        status: applicationData.status,
+        changedAt: now,
+      },
+    ],
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  const response = await fetch(`${BASE_URL}/applications`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newApplication),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to create application");
+  }
+
+  return response.json();
+};

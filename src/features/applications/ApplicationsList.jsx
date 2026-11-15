@@ -5,6 +5,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { ChevronDown, Pencil } from "lucide-react";
 import { fetchApplications } from "./applicationsSlice";
 import ApplicationDrawer from "./components/ApplicationDrawer";
+import CreateApplicationDrawer from "./components/CreateApplicationDrawer";
 
 const statusStyles = {
     wishlist: "bg-gray-100 text-gray-700",
@@ -56,6 +57,7 @@ function ApplicationsList() {
     const totalPages = Math.ceil(total / 10);
 
     const [searchInput, setSearchInput] = useState(searchText);
+    const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false);
 
     // Keep the input synchronized with URL changes
     useEffect(() => {
@@ -85,6 +87,17 @@ function ApplicationsList() {
         sortBy,
         order,
     ]);
+    useEffect(() => {
+        const openCreateDrawer = () => {
+            setIsCreateDrawerOpen(true);
+        };
+
+        window.addEventListener("open-create-application", openCreateDrawer);
+
+        return () => {
+            window.removeEventListener("open-create-application", openCreateDrawer);
+        };
+    }, []);
 
     const handleSearchChange = (value) => {
         const params = new URLSearchParams(searchParams);
@@ -399,6 +412,11 @@ function ApplicationsList() {
                 <ApplicationDrawer
                     applicationId={editingApplicationId}
                     onClose={() => setEditingApplicationId(null)}
+                />
+            )}
+            {isCreateDrawerOpen && (
+                <CreateApplicationDrawer
+                    onClose={() => setIsCreateDrawerOpen(false)}
                 />
             )}
         </div>
