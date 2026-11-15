@@ -5,9 +5,10 @@ import {
     getApplicationById,
     updateApplication,
     createApplication,
+    deleteApplication,
 } from "../../api/applicationsApi";
 
-// Fetch applications from the API
+// Fetch all applications
 export const fetchApplications = createAsyncThunk(
     "applications/fetchApplications",
     async (filters = {}) => {
@@ -34,6 +35,7 @@ export const updateApplicationById = createAsyncThunk(
         });
     }
 );
+
 // Create a new application
 export const createApplicationById = createAsyncThunk(
     "applications/createApplication",
@@ -42,8 +44,17 @@ export const createApplicationById = createAsyncThunk(
     }
 );
 
+// Delete an application
+export const deleteApplicationById = createAsyncThunk(
+    "applications/deleteApplication",
+    async (id) => {
+        return await deleteApplication(id);
+    }
+);
+
 const applicationsSlice = createSlice({
     name: "applications",
+
     initialState: {
         data: [],
         total: 0,
@@ -58,10 +69,23 @@ const applicationsSlice = createSlice({
         // State for updating an application
         updateStatus: "idle",
         updateError: null,
+
+        // State for creating an application
         createStatus: "idle",
         createError: null,
+
+        // State for deleting an application
+        deleteStatus: "idle",
+        deleteError: null,
     },
-    reducers: {},
+
+    reducers: {
+        clearDeleteError: (state) => {
+            state.deleteError = null;
+            state.deleteStatus = "idle";
+        },
+    },
+
     extraReducers: (builder) => {
         builder
             // Fetch all applications
@@ -102,20 +126,19 @@ const applicationsSlice = createSlice({
             .addCase(updateApplicationById.fulfilled, (state, action) => {
                 state.updateStatus = "succeeded";
 
-                // Update the application in the list
                 state.data = state.data.map((application) =>
                     application.id === action.payload.id
                         ? action.payload
                         : application
                 );
 
-                // Update the currently opened application details
                 state.applicationDetails = action.payload;
             })
             .addCase(updateApplicationById.rejected, (state, action) => {
                 state.updateStatus = "failed";
                 state.updateError = action.error.message;
             })
+
             // Create an application
             .addCase(createApplicationById.pending, (state) => {
                 state.createStatus = "loading";
@@ -128,9 +151,32 @@ const applicationsSlice = createSlice({
             })
             .addCase(createApplicationById.rejected, (state, action) => {
                 state.createStatus = "failed";
-                state.createError = action.error.message || "Failed to create application";
+                state.createError =
+                    action.error.message || "Failed to create application";
+            })
+
+            // Delete an application
+            .addCase(deleteApplicationById.pending, (state) => {
+                state.deleteStatus = "loading";
+                state.deleteError = null;
+            })
+            .addCase(deleteApplicationById.fulfilled, (state, action) => {
+                state.deleteStatus = "succeeded";
+
+                state.data = state.data.filter(
+                    (application) => application.id !== action.payload
+                );
+
+                state.total = Math.max(0, state.total - 1);
+            })
+            .addCase(deleteApplicationById.rejected, (state, action) => {
+                state.deleteStatus = "failed";
+                state.deleteError =
+                    action.error.message || "Failed to delete application";
             });
     },
 });
+
+export const { clearDeleteError } = applicationsSlice.actions;
 
 export default applicationsSlice.reducer;

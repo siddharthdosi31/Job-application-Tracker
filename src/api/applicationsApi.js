@@ -108,3 +108,16 @@ export const createApplication = async (applicationData) => {
 
   return response.json();
 };
+
+// Delete an application
+export const deleteApplication = async (id) => {
+    const response = await fetch(`${BASE_URL}/applications/${id}`, {
+        method: "DELETE",
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to delete application");
+    }
+
+    return id;
+};

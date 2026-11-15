@@ -1015,23 +1015,23 @@
     {
       "company": "volopay",
       "role": "Frontend Engineer Intern",
-      "jobUrl": "https://careers.example.com/zephyr-streaming/jobs/10399",
+      "jobUrl": "https://careers.example.com/zephyr-streaming/jobs/1039",
       "status": "offer",
-      "dateApplied": "2026-09-22",
+      "dateApplied": "2026-11-15",
       "salaryMin": 500000,
       "salaryMax": 800000,
       "currency": "INR",
       "locationType": "onsite",
-      "location": "bengaluru",
-      "notes": "got selected ",
+      "location": "banglore",
+      "notes": "got selected\n",
       "statusHistory": [
         {
           "status": "offer",
-          "changedAt": "2026-11-15T12:08:02.056Z"
+          "changedAt": "2026-11-15T12:23:01.952Z"
         }
       ],
-      "createdAt": "2026-11-15T12:08:02.056Z",
-      "updatedAt": "2026-11-15T12:08:02.056Z",
+      "createdAt": "2026-11-15T12:23:01.952Z",
+      "updatedAt": "2026-11-15T12:23:01.952Z",
       "id": 41
     }
   ]

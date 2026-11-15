@@ -2,8 +2,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, Link } from "react-router-dom";
-import { ChevronDown, Pencil } from "lucide-react";
-import { fetchApplications } from "./applicationsSlice";
+import { ChevronDown, Pencil, Trash2 } from "lucide-react";
+import {
+    fetchApplications,
+    deleteApplicationById,
+    clearDeleteError,
+} from "./applicationsSlice";
 import ApplicationDrawer from "./components/ApplicationDrawer";
 import CreateApplicationDrawer from "./components/CreateApplicationDrawer";
 
@@ -42,9 +46,15 @@ function formatSalary(min, max, currency = "INR") {
 function ApplicationsList() {
     const dispatch = useDispatch();
     const [editingApplicationId, setEditingApplicationId] = useState(null);
-    const { data, total, status, error } = useSelector(
-        (state) => state.applications
-    );
+    const [deletingApplication, setDeletingApplication] = useState(null);
+    const {
+        data,
+        total,
+        status,
+        error,
+        deleteStatus,
+        deleteError,
+    } = useSelector((state) => state.applications);
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -170,6 +180,41 @@ function ApplicationsList() {
                 order,
             })
         );
+    };
+    const handleDeleteClick = (application) => {
+        dispatch(clearDeleteError());
+        setDeletingApplication(application);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!deletingApplication || deleteStatus === "loading") return;
+
+        try {
+            await dispatch(
+                deleteApplicationById(deletingApplication.id)
+            ).unwrap();
+
+            setDeletingApplication(null);
+
+            // If the deleted row was the only row on this page,
+            // go back one page.
+            if (data.length === 1 && currentPage > 1) {
+                handlePageChange(currentPage - 1);
+            } else {
+                // Refresh the current page using the existing filters and sorting.
+                dispatch(
+                    fetchApplications({
+                        q: searchText,
+                        status: selectedStatus,
+                        page: currentPage,
+                        sortBy,
+                        order,
+                    })
+                );
+            }
+        } catch {
+            // The Redux state displays the deletion error.
+        }
     };
 
     return (
@@ -347,15 +392,27 @@ function ApplicationsList() {
                                                 )}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setEditingApplicationId(application.id)}
-                                                    aria-label={`Edit ${application.company}`}
-                                                    title="Edit application"
-                                                    className="rounded-lg p-2 text-gray-500 transition hover:bg-indigo-50 hover:text-indigo-600"
-                                                >
-                                                    <Pencil size={17} />
-                                                </button>
+                                                <div className="flex items-center gap-1">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setEditingApplicationId(application.id)}
+                                                        aria-label={`Edit ${application.company}`}
+                                                        title="Edit application"
+                                                        className="rounded-lg p-2 text-gray-500 transition hover:bg-indigo-50 hover:text-indigo-600"
+                                                    >
+                                                        <Pencil size={17} />
+                                                    </button>
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleDeleteClick(application)}
+                                                        aria-label={`Delete ${application.company}`}
+                                                        title="Delete application"
+                                                        className="rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600"
+                                                    >
+                                                        <Trash2 size={17} />
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -418,6 +475,70 @@ function ApplicationsList() {
                 <CreateApplicationDrawer
                     onClose={() => setIsCreateDrawerOpen(false)}
                 />
+            )}
+            {/* Delete Confirmation Modal */}
+            {deletingApplication && (
+                <div
+                    className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4"
+                    onMouseDown={(event) => {
+                        if (
+                            event.target === event.currentTarget &&
+                            deleteStatus !== "loading"
+                        ) {
+                            setDeletingApplication(null);
+                        }
+                    }}
+                >
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="delete-modal-title"
+                        className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+                    >
+                        <h3
+                            id="delete-modal-title"
+                            className="text-lg font-bold text-gray-900"
+                        >
+                            Delete Application?
+                        </h3>
+
+                        <p className="mt-2 text-sm text-gray-600">
+                            Are you sure you want to delete the application for{" "}
+                            <span className="font-semibold text-gray-900">
+                                {deletingApplication.company}
+                            </span>
+                            ? This action cannot be undone.
+                        </p>
+
+                        {deleteError && (
+                            <p className="mt-3 text-sm text-red-600">
+                                Unable to delete application: {deleteError}
+                            </p>
+                        )}
+
+                        <div className="mt-6 flex justify-end gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setDeletingApplication(null)}
+                                disabled={deleteStatus === "loading"}
+                                className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={handleConfirmDelete}
+                                disabled={deleteStatus === "loading"}
+                                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                                {deleteStatus === "loading"
+                                    ? "Deleting..."
+                                    : "Delete"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
