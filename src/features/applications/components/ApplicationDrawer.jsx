@@ -1,3 +1,4 @@
+
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { X, Save } from "lucide-react";
@@ -146,6 +147,8 @@ function ApplicationDrawer({ applicationId, onClose }) {
     });
 
   const handleClose = useCallback(() => {
+    if (updateStatus === "loading" || form.isSubmitting) return;
+
     if (detailsStatus !== "succeeded" || !applicationDetails) {
       onClose();
       return;
@@ -160,7 +163,14 @@ function ApplicationDrawer({ applicationId, onClose }) {
     }
 
     onClose();
-  }, [detailsStatus, applicationDetails, hasUnsavedChanges, onClose]);
+  }, [
+    updateStatus,
+    form.isSubmitting,
+    detailsStatus,
+    applicationDetails,
+    hasUnsavedChanges,
+    onClose,
+  ]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -201,8 +211,9 @@ function ApplicationDrawer({ applicationId, onClose }) {
           <button
             type="button"
             onClick={handleClose}
+            disabled={updateStatus === "loading" || form.isSubmitting}
             aria-label="Close drawer"
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
           >
             <X size={20} />
           </button>
@@ -250,7 +261,8 @@ function ApplicationDrawer({ applicationId, onClose }) {
               <button
                 type="button"
                 onClick={handleClose}
-                className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+                disabled={updateStatus === "loading" || form.isSubmitting}
+                className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
               >
                 Cancel
               </button>
@@ -258,11 +270,13 @@ function ApplicationDrawer({ applicationId, onClose }) {
               <button
                 type="button"
                 onClick={form.handleSubmit}
-                disabled={updateStatus === "loading"}
+                disabled={updateStatus === "loading" || form.isSubmitting}
                 className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <Save size={16} />
-                {updateStatus === "loading" ? "Saving..." : "Save changes"}
+                {updateStatus === "loading" || form.isSubmitting
+                  ? "Saving..."
+                  : "Save changes"}
               </button>
             </div>
           </>

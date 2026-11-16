@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
@@ -96,7 +97,7 @@ function CreateApplicationDrawer({ onClose }) {
   });
 
   const handleClose = () => {
-    if (createStatus === "loading") return;
+    if (createStatus === "loading" || form.isSubmitting) return;
 
     const hasChanges =
       JSON.stringify(form.values) !== JSON.stringify(initialValues);
@@ -126,7 +127,7 @@ function CreateApplicationDrawer({ onClose }) {
     };
   });
 
-  const isSaving = createStatus === "loading";
+  const isSaving = createStatus === "loading" || form.isSubmitting;
 
   return (
     <div
@@ -153,7 +154,7 @@ function CreateApplicationDrawer({ onClose }) {
             onClick={handleClose}
             disabled={isSaving}
             aria-label="Close drawer"
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 disabled:opacity-50 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
           >
             <X size={20} />
           </button>
@@ -177,7 +178,7 @@ function CreateApplicationDrawer({ onClose }) {
             type="button"
             onClick={handleClose}
             disabled={isSaving}
-            className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
           >
             Cancel
           </button>

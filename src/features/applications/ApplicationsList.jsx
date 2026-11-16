@@ -108,6 +108,21 @@ function ApplicationsList() {
             window.removeEventListener("open-create-application", openCreateDrawer);
         };
     }, []);
+    useEffect(() => {
+    if (!deletingApplication || deleteStatus === "loading") return;
+
+    const handleEscapeKey = (event) => {
+        if (event.key === "Escape") {
+            setDeletingApplication(null);
+        }
+    };
+
+    window.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+        window.removeEventListener("keydown", handleEscapeKey);
+    };
+}, [deletingApplication, deleteStatus]);
 
     const handleSearchChange = (value) => {
         const params = new URLSearchParams(searchParams);
