@@ -19,7 +19,7 @@ function MainLayout() {
           onMenuClick={() => setIsMobileMenuOpen(true)}
         />
 
-        <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 bg-gray-50 p-4 transition-colors dark:bg-gray-950 sm:p-6 lg:p-8">
           <Outlet />
         </main>
       </div>

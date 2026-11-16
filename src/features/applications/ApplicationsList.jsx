@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, Link } from "react-router-dom";
@@ -11,12 +10,13 @@ import {
 import ApplicationDrawer from "./components/ApplicationDrawer";
 import CreateApplicationDrawer from "./components/CreateApplicationDrawer";
 import { fetchDashboardApplications } from "../dashboard/dashboardSlice";
+
 const statusStyles = {
-    wishlist: "bg-gray-100 text-gray-700",
-    applied: "bg-blue-50 text-blue-700",
-    interview: "bg-purple-50 text-purple-700",
-    offer: "bg-green-50 text-green-700",
-    rejected: "bg-red-50 text-red-700",
+    wishlist: "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200",
+    applied: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
+    interview: "bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300",
+    offer: "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300",
+    rejected: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300",
 };
 
 function formatDate(date) {
@@ -47,6 +47,7 @@ function ApplicationsList() {
     const dispatch = useDispatch();
     const [editingApplicationId, setEditingApplicationId] = useState(null);
     const [deletingApplication, setDeletingApplication] = useState(null);
+
     const {
         data,
         total,
@@ -69,12 +70,10 @@ function ApplicationsList() {
     const [searchInput, setSearchInput] = useState(searchText);
     const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false);
 
-    // Keep the input synchronized with URL changes
     useEffect(() => {
         setSearchInput(searchText);
     }, [searchText]);
 
-    // Debounce search and fetch applications
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             dispatch(
@@ -97,6 +96,7 @@ function ApplicationsList() {
         sortBy,
         order,
     ]);
+
     useEffect(() => {
         const openCreateDrawer = () => {
             setIsCreateDrawerOpen(true);
@@ -164,9 +164,7 @@ function ApplicationsList() {
             params.set("order", "desc");
         }
 
-        // Reset pagination when sorting changes
         params.delete("page");
-
         setSearchParams(params);
     };
 
@@ -181,6 +179,7 @@ function ApplicationsList() {
             })
         );
     };
+
     const handleDeleteClick = (application) => {
         dispatch(clearDeleteError());
         setDeletingApplication(application);
@@ -194,17 +193,12 @@ function ApplicationsList() {
                 deleteApplicationById(deletingApplication.id)
             ).unwrap();
 
-            // Refresh dashboard statistics after successful deletion
             dispatch(fetchDashboardApplications());
-
             setDeletingApplication(null);
 
-            // If the deleted row was the only row on this page,
-            // go back one page.
             if (data.length === 1 && currentPage > 1) {
                 handlePageChange(currentPage - 1);
             } else {
-                // Refresh the current page using the existing filters and sorting.
                 dispatch(
                     fetchApplications({
                         q: searchText,
@@ -222,18 +216,20 @@ function ApplicationsList() {
 
     return (
         <div className="space-y-6">
+
             {/* Page Heading */}
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
                 <div>
-                    <h2 className="text-xl font-bold text-gray-900">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                         All Applications
                     </h2>
-                    <p className="mt-1 text-sm text-gray-500">
+
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                         Keep track of your job applications and their progress.
                     </p>
                 </div>
 
-                <span className="w-fit rounded-full bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700">
+                <span className="w-fit rounded-full bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
                     {data.length} Applications
                 </span>
             </div>
@@ -248,7 +244,7 @@ function ApplicationsList() {
                         handleSearchChange(event.target.value);
                     }}
                     placeholder="Search company or role..."
-                    className="h-11 min-w-0 w-full flex-1 rounded-lg border border-gray-200 bg-white px-4 text-sm text-gray-700 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                    className="h-11 min-w-0 w-full flex-1 rounded-lg border border-gray-200 bg-white px-4 text-sm text-gray-700 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-indigo-950"
                 />
 
                 {/* Status Filter */}
@@ -257,7 +253,7 @@ function ApplicationsList() {
                         value={selectedStatus}
                         onChange={(event) => handleStatusChange(event.target.value)}
                         aria-label="Filter by status"
-                        className="h-11 w-full appearance-none cursor-pointer rounded-lg border border-gray-200 bg-white pl-4 pr-10 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                        className="h-11 w-full appearance-none cursor-pointer rounded-lg border border-gray-200 bg-white pl-4 pr-10 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:ring-indigo-950"
                     >
                         <option value="">All statuses</option>
                         <option value="wishlist">Wishlist</option>
@@ -269,7 +265,7 @@ function ApplicationsList() {
 
                     <ChevronDown
                         size={16}
-                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400"
                     />
                 </div>
 
@@ -279,7 +275,7 @@ function ApplicationsList() {
                         value={`${sortBy}-${order}`}
                         onChange={(event) => handleSortChange(event.target.value)}
                         aria-label="Sort applications"
-                        className="h-11 w-full appearance-none cursor-pointer rounded-lg border border-gray-200 bg-white pl-4 pr-10 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                        className="h-11 w-full appearance-none cursor-pointer rounded-lg border border-gray-200 bg-white pl-4 pr-10 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:ring-indigo-950"
                     >
                         <option value="dateApplied-desc">Newest first</option>
                         <option value="dateApplied-asc">Oldest first</option>
@@ -289,89 +285,80 @@ function ApplicationsList() {
 
                     <ChevronDown
                         size={16}
-                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400"
                     />
                 </div>
             </div>
 
             {/* Loading and Error Messages */}
             {status === "loading" && (
-                <p className="text-sm text-indigo-600">
+                <p className="text-sm text-indigo-600 dark:text-indigo-400">
                     Updating applications...
                 </p>
             )}
 
             {status === "failed" && (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-                    <p className="text-sm font-medium text-red-700">
+                <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950">
+                    <p className="text-sm font-medium text-red-700 dark:text-red-300">
                         Unable to load applications: {error}
                     </p>
 
                     <button
                         onClick={handleRetry}
-                        className="mt-2 text-sm font-semibold text-red-700 hover:underline"
+                        className="mt-2 text-sm font-semibold text-red-700 hover:underline dark:text-red-300"
                     >
                         Try Again
                     </button>
                 </div>
             )}
-            
+
             {/* Applications Table and Mobile Cards */}
             {data.length === 0 && status !== "loading" ? (
-                <div className="rounded-xl border border-gray-200 bg-white px-6 py-16 text-center">
-                    <h3 className="text-lg font-semibold text-gray-900">
+                <div className="rounded-xl border border-gray-200 bg-white px-6 py-16 text-center dark:border-gray-700 dark:bg-gray-800">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                         No applications found
                     </h3>
-                    <p className="mt-2 text-sm text-gray-500">
+
+                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                         Try changing your search or status filter.
                     </p>
                 </div>
             ) : (
                 data.length > 0 && (
-                    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
 
-                        {/* Desktop Table: visible on medium screens and above */}
+                        {/* Desktop Table */}
                         <div className="hidden overflow-x-auto md:block">
                             <table className="w-full min-w-[920px] text-left">
-                                <thead className="border-b border-gray-200 bg-gray-50">
+                                <thead className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
                                     <tr>
-                                        <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                            Company
-                                        </th>
-                                        <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                            Role
-                                        </th>
-                                        <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                            Status
-                                        </th>
-                                        <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                            Date Applied
-                                        </th>
-                                        <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                            Salary Range
-                                        </th>
-                                        <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                            Actions
-                                        </th>
+                                        {["Company", "Role", "Status", "Date Applied", "Salary Range", "Actions"].map((heading) => (
+                                            <th
+                                                key={heading}
+                                                className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                                            >
+                                                {heading}
+                                            </th>
+                                        ))}
                                     </tr>
                                 </thead>
 
-                                <tbody className="divide-y divide-gray-100">
+                                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                                     {data.map((application) => (
                                         <tr
                                             key={application.id}
-                                            className="transition-colors hover:bg-gray-50"
+                                            className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50"
                                         >
                                             <td className="px-6 py-4">
                                                 <Link
                                                     to={`/applications/${application.id}`}
-                                                    className="font-semibold text-indigo-600 hover:underline"
+                                                    className="font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
                                                 >
                                                     {application.company}
                                                 </Link>
                                             </td>
 
-                                            <td className="px-6 py-4 text-sm text-gray-600">
+                                            <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
                                                 {application.role}
                                             </td>
 
@@ -379,18 +366,18 @@ function ApplicationsList() {
                                                 <span
                                                     className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize ${
                                                         statusStyles[application.status] ||
-                                                        "bg-gray-100 text-gray-700"
+                                                        "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
                                                     }`}
                                                 >
                                                     {application.status}
                                                 </span>
                                             </td>
 
-                                            <td className="px-6 py-4 text-sm text-gray-600">
+                                            <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
                                                 {formatDate(application.dateApplied)}
                                             </td>
 
-                                            <td className="px-6 py-4 text-sm font-medium text-gray-700">
+                                            <td className="px-6 py-4 text-sm font-medium text-gray-700 dark:text-gray-200">
                                                 {formatSalary(
                                                     application.salaryMin,
                                                     application.salaryMax,
@@ -407,7 +394,7 @@ function ApplicationsList() {
                                                         }
                                                         aria-label={`Edit ${application.company}`}
                                                         title="Edit application"
-                                                        className="rounded-lg p-2 text-gray-500 transition hover:bg-indigo-50 hover:text-indigo-600"
+                                                        className="rounded-lg p-2 text-gray-500 transition hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-indigo-950 dark:hover:text-indigo-400"
                                                     >
                                                         <Pencil size={17} />
                                                     </button>
@@ -419,7 +406,7 @@ function ApplicationsList() {
                                                         }
                                                         aria-label={`Delete ${application.company}`}
                                                         title="Delete application"
-                                                        className="rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600"
+                                                        className="rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600 dark:text-gray-400 dark:hover:bg-red-950 dark:hover:text-red-400"
                                                     >
                                                         <Trash2 size={17} />
                                                     </button>
@@ -431,55 +418,54 @@ function ApplicationsList() {
                             </table>
                         </div>
 
-                        {/* Mobile Cards: visible below medium screens */}
-                        <div className="divide-y divide-gray-100 md:hidden">
+                        {/* Mobile Cards */}
+                        <div className="divide-y divide-gray-100 dark:divide-gray-700 md:hidden">
                             {data.map((application) => (
                                 <div
                                     key={application.id}
                                     className="space-y-3 p-4"
                                 >
-                                    {/* Company and Role */}
                                     <div className="min-w-0">
                                         <Link
                                             to={`/applications/${application.id}`}
-                                            className="break-words text-base font-semibold text-indigo-600 hover:underline"
+                                            className="break-words text-base font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
                                         >
                                             {application.company}
                                         </Link>
 
-                                        <p className="mt-1 break-words text-sm text-gray-600">
+                                        <p className="mt-1 break-words text-sm text-gray-600 dark:text-gray-300">
                                             {application.role}
                                         </p>
                                     </div>
 
-                                    {/* Status */}
                                     <div>
                                         <span
                                             className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize ${
                                                 statusStyles[application.status] ||
-                                                "bg-gray-100 text-gray-700"
+                                                "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
                                             }`}
                                         >
                                             {application.status}
                                         </span>
                                     </div>
 
-                                    {/* Application Details */}
                                     <div className="grid grid-cols-2 gap-3">
                                         <div className="min-w-0">
-                                            <p className="text-xs font-medium text-gray-400">
+                                            <p className="text-xs font-medium text-gray-400 dark:text-gray-500">
                                                 Date Applied
                                             </p>
-                                            <p className="mt-1 break-words text-sm text-gray-700">
+
+                                            <p className="mt-1 break-words text-sm text-gray-700 dark:text-gray-300">
                                                 {formatDate(application.dateApplied)}
                                             </p>
                                         </div>
 
                                         <div className="min-w-0">
-                                            <p className="text-xs font-medium text-gray-400">
+                                            <p className="text-xs font-medium text-gray-400 dark:text-gray-500">
                                                 Salary Range
                                             </p>
-                                            <p className="mt-1 break-words text-sm text-gray-700">
+
+                                            <p className="mt-1 break-words text-sm text-gray-700 dark:text-gray-300">
                                                 {formatSalary(
                                                     application.salaryMin,
                                                     application.salaryMax,
@@ -489,15 +475,14 @@ function ApplicationsList() {
                                         </div>
                                     </div>
 
-                                    {/* Actions */}
-                                    <div className="flex justify-end gap-2 border-t border-gray-100 pt-2">
+                                    <div className="flex justify-end gap-2 border-t border-gray-100 pt-2 dark:border-gray-700">
                                         <button
                                             type="button"
                                             onClick={() =>
                                                 setEditingApplicationId(application.id)
                                             }
                                             aria-label={`Edit ${application.company}`}
-                                            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50"
+                                            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950"
                                         >
                                             <Pencil size={16} />
                                             Edit
@@ -509,7 +494,7 @@ function ApplicationsList() {
                                                 handleDeleteClick(application)
                                             }
                                             aria-label={`Delete ${application.company}`}
-                                            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
+                                            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950"
                                         >
                                             <Trash2 size={16} />
                                             Delete
@@ -519,9 +504,9 @@ function ApplicationsList() {
                             ))}
                         </div>
 
-                        {/* Pagination: shared by desktop and mobile */}
-                        <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-100 px-3 py-4 sm:px-6 md:flex-row">
-                            <p className="text-center text-sm text-gray-500">
+                        {/* Pagination */}
+                        <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-100 px-3 py-4 dark:border-gray-700 sm:px-6 md:flex-row">
+                            <p className="text-center text-sm text-gray-500 dark:text-gray-400">
                                 Showing {(currentPage - 1) * 10 + 1}
                                 {" - "}
                                 {(currentPage - 1) * 10 + data.length} of {total} applications
@@ -531,7 +516,7 @@ function ApplicationsList() {
                                 <button
                                     onClick={() => handlePageChange(currentPage - 1)}
                                     disabled={currentPage <= 1}
-                                    className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
                                 >
                                     Previous
                                 </button>
@@ -546,7 +531,7 @@ function ApplicationsList() {
                                         className={`rounded-lg px-3 py-2 text-sm font-medium ${
                                             currentPage === page
                                                 ? "bg-indigo-600 text-white"
-                                                : "border border-gray-200 text-gray-600 hover:bg-gray-50"
+                                                : "border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
                                         }`}
                                     >
                                         {page}
@@ -556,7 +541,7 @@ function ApplicationsList() {
                                 <button
                                     onClick={() => handlePageChange(currentPage + 1)}
                                     disabled={currentPage >= totalPages}
-                                    className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
                                 >
                                     Next
                                 </button>
@@ -572,11 +557,13 @@ function ApplicationsList() {
                     onClose={() => setEditingApplicationId(null)}
                 />
             )}
+
             {isCreateDrawerOpen && (
                 <CreateApplicationDrawer
                     onClose={() => setIsCreateDrawerOpen(false)}
                 />
             )}
+
             {/* Delete Confirmation Modal */}
             {deletingApplication && (
                 <div
@@ -594,25 +581,25 @@ function ApplicationsList() {
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="delete-modal-title"
-                        className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+                        className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-xl dark:border-gray-700 dark:bg-gray-800"
                     >
                         <h3
                             id="delete-modal-title"
-                            className="text-lg font-bold text-gray-900"
+                            className="text-lg font-bold text-gray-900 dark:text-white"
                         >
                             Delete Application?
                         </h3>
 
-                        <p className="mt-2 text-sm text-gray-600">
+                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
                             Are you sure you want to delete the application for{" "}
-                            <span className="font-semibold text-gray-900">
+                            <span className="font-semibold text-gray-900 dark:text-white">
                                 {deletingApplication.company}
                             </span>
                             ? This action cannot be undone.
                         </p>
 
                         {deleteError && (
-                            <p className="mt-3 text-sm text-red-600">
+                            <p className="mt-3 text-sm text-red-600 dark:text-red-400">
                                 Unable to delete application: {deleteError}
                             </p>
                         )}
@@ -622,7 +609,7 @@ function ApplicationsList() {
                                 type="button"
                                 onClick={() => setDeletingApplication(null)}
                                 disabled={deleteStatus === "loading"}
-                                className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
                             >
                                 Cancel
                             </button>

@@ -95,10 +95,26 @@
         {
           "status": "wishlist",
           "changedAt": "2026-11-16T06:38:21.943Z"
+        },
+        {
+          "status": "applied",
+          "changedAt": "2026-11-16T06:58:35.814Z"
+        },
+        {
+          "status": "wishlist",
+          "changedAt": "2026-11-16T06:58:37.680Z"
+        },
+        {
+          "status": "applied",
+          "changedAt": "2026-11-16T06:58:39.345Z"
+        },
+        {
+          "status": "wishlist",
+          "changedAt": "2026-11-16T06:58:43.046Z"
         }
       ],
       "createdAt": "2026-08-07T10:45:00Z",
-      "updatedAt": "2026-11-16T06:38:21.943Z"
+      "updatedAt": "2026-11-16T06:58:43.046Z"
     },
     {
       "id": 3,

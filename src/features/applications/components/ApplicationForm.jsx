@@ -1,10 +1,15 @@
 function ApplicationForm({ form, applicationDetails = null }) {
   const inputClass =
-    "w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
+    "w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-900";
+
+  const labelClass =
+    "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-200";
+
+  const errorClass = "mt-1 text-xs text-red-600 dark:text-red-400";
 
   const renderField = (name, label, type = "text") => (
     <div>
-      <label className="mb-1.5 block text-sm font-medium text-gray-700">
+      <label className={labelClass}>
         {label}
       </label>
 
@@ -18,7 +23,7 @@ function ApplicationForm({ form, applicationDetails = null }) {
       />
 
       {form.touched[name] && form.errors[name] && (
-        <p className="mt-1 text-xs text-red-600">{form.errors[name]}</p>
+        <p className={errorClass}>{form.errors[name]}</p>
       )}
     </div>
   );
@@ -33,7 +38,7 @@ function ApplicationForm({ form, applicationDetails = null }) {
       {renderField("jobUrl", "Job URL", "url")}
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-gray-700">
+        <label className={labelClass}>
           Status
         </label>
 
@@ -60,14 +65,14 @@ function ApplicationForm({ form, applicationDetails = null }) {
       </div>
 
       {form.errors.salaryMax && form.touched.salaryMax && (
-        <p className="-mt-4 text-xs text-red-600">
+        <p className="-mt-4 text-xs text-red-600 dark:text-red-400">
           {form.errors.salaryMax}
         </p>
       )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+          <label className={labelClass}>
             Currency
           </label>
 
@@ -85,7 +90,7 @@ function ApplicationForm({ form, applicationDetails = null }) {
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+          <label className={labelClass}>
             Location type
           </label>
 
@@ -105,7 +110,7 @@ function ApplicationForm({ form, applicationDetails = null }) {
       {renderField("location", "Location")}
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-gray-700">
+        <label className={labelClass}>
           Notes
         </label>
 
@@ -119,14 +124,14 @@ function ApplicationForm({ form, applicationDetails = null }) {
         />
 
         {form.touched.notes && form.errors.notes && (
-          <p className="mt-1 text-xs text-red-600">{form.errors.notes}</p>
+          <p className={errorClass}>{form.errors.notes}</p>
         )}
       </div>
 
       {applicationDetails && (
         <>
-          <div className="border-t border-gray-200 pt-5">
-            <h3 className="mb-4 font-semibold text-gray-900">
+          <div className="border-t border-gray-200 pt-5 dark:border-gray-700">
+            <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">
               Status History
             </h3>
 
@@ -134,10 +139,10 @@ function ApplicationForm({ form, applicationDetails = null }) {
               <div className="space-y-4">
                 {applicationDetails.statusHistory.map((entry, index) => (
                   <div key={`${entry.changedAt}-${index}`}>
-                    <p className="text-sm font-medium capitalize text-gray-800">
+                    <p className="text-sm font-medium capitalize text-gray-800 dark:text-gray-200">
                       {entry.status}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {entry.changedAt
                         ? new Date(entry.changedAt).toLocaleString("en-IN")
                         : "-"}
@@ -146,13 +151,13 @@ function ApplicationForm({ form, applicationDetails = null }) {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 No status history available.
               </p>
             )}
           </div>
 
-          <div className="border-t border-gray-200 pt-4 text-xs text-gray-500">
+          <div className="border-t border-gray-200 pt-4 text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400">
             <p>Application ID: {applicationDetails.id}</p>
             <p className="mt-1">
               Created:{" "}

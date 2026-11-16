@@ -86,10 +86,7 @@ function CreateApplicationDrawer({ onClose }) {
       try {
         await dispatch(createApplicationById(applicationData)).unwrap();
 
-        // Refresh dashboard statistics after successful creation
         dispatch(fetchDashboardApplications());
-
-        // Return to the first page with the default list filters
         setSearchParams({});
         onClose();
       } catch {
@@ -140,13 +137,13 @@ function CreateApplicationDrawer({ onClose }) {
         }
       }}
     >
-      <aside className="absolute right-0 top-0 flex h-full w-full max-w-xl flex-col bg-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
+      <aside className="absolute right-0 top-0 flex h-full w-full max-w-xl flex-col bg-white shadow-2xl transition-colors dark:bg-gray-900">
+        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5 dark:border-gray-700">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
               Add Application
             </h2>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Enter the details of your job application.
             </p>
           </div>
@@ -156,7 +153,7 @@ function CreateApplicationDrawer({ onClose }) {
             onClick={handleClose}
             disabled={isSaving}
             aria-label="Close drawer"
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 disabled:opacity-50"
+            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 disabled:opacity-50 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
           >
             <X size={20} />
           </button>
@@ -169,18 +166,18 @@ function CreateApplicationDrawer({ onClose }) {
           <ApplicationForm form={form} />
 
           {createStatus === "failed" && (
-            <p className="text-sm text-red-600">
+            <p className="text-sm text-red-600 dark:text-red-400">
               Unable to create application: {createError}
             </p>
           )}
         </form>
 
-        <div className="flex justify-end gap-3 border-t border-gray-200 px-6 py-4">
+        <div className="flex justify-end gap-3 border-t border-gray-200 px-6 py-4 dark:border-gray-700">
           <button
             type="button"
             onClick={handleClose}
             disabled={isSaving}
-            className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+            className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
           >
             Cancel
           </button>

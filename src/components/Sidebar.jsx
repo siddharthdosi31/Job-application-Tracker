@@ -1,4 +1,3 @@
-
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -40,7 +39,7 @@ function Sidebar({ isMobileOpen, onClose }) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-gray-200 bg-white px-5 py-6 transition-transform duration-300 md:translate-x-0 ${
+        className={`fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-gray-200 bg-white px-5 py-6 transition-transform duration-300 dark:border-gray-700 dark:bg-gray-900 md:translate-x-0 ${
           isMobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -51,7 +50,7 @@ function Sidebar({ isMobileOpen, onClose }) {
               A
             </div>
 
-            <h1 className="text-xl font-bold text-gray-900">
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">
               Applied
             </h1>
           </div>
@@ -61,7 +60,7 @@ function Sidebar({ isMobileOpen, onClose }) {
             type="button"
             onClick={onClose}
             aria-label="Close navigation"
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 md:hidden"
+            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 md:hidden"
           >
             <X size={20} />
           </button>
@@ -85,8 +84,8 @@ function Sidebar({ isMobileOpen, onClose }) {
                 className={({ isActive }) =>
                   `flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors ${
                     isActive
-                      ? "bg-indigo-50 text-indigo-700"
-                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                      ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
+                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
                   }`
                 }
               >
@@ -98,17 +97,17 @@ function Sidebar({ isMobileOpen, onClose }) {
         </nav>
 
         {/* User Profile */}
-        <div className="mt-auto border-t border-gray-200 pt-5">
+        <div className="mt-auto border-t border-gray-200 pt-5 dark:border-gray-700">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-semibold text-indigo-700">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
               S
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-gray-900">
+              <p className="text-sm font-semibold text-gray-900 dark:text-white">
                 Siddharth
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 Personal workspace
               </p>
             </div>

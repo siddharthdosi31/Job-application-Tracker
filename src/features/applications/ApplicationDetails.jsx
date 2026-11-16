@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link } from "react-router-dom";
@@ -6,11 +5,11 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import { fetchApplicationById } from "./applicationsSlice";
 
 const statusStyles = {
-  wishlist: "bg-gray-100 text-gray-700",
-  applied: "bg-blue-50 text-blue-700",
-  interview: "bg-purple-50 text-purple-700",
-  offer: "bg-green-50 text-green-700",
-  rejected: "bg-red-50 text-red-700",
+  wishlist: "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200",
+  applied: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
+  interview: "bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300",
+  offer: "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300",
+  rejected: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300",
 };
 
 function formatDate(date) {
@@ -51,7 +50,7 @@ function ApplicationDetails() {
 
   if (detailsStatus === "loading" || detailsStatus === "idle") {
     return (
-      <p className="py-10 text-center text-sm text-gray-500">
+      <p className="py-10 text-center text-sm text-gray-500 dark:text-gray-400">
         Loading application details...
       </p>
     );
@@ -59,13 +58,13 @@ function ApplicationDetails() {
 
   if (detailsStatus === "failed") {
     return (
-      <div className="rounded-xl border border-red-200 bg-red-50 p-6">
-        <p className="font-medium text-red-700">
+      <div className="rounded-xl border border-red-200 bg-red-50 p-6 dark:border-red-900 dark:bg-red-950">
+        <p className="font-medium text-red-700 dark:text-red-300">
           Unable to load application: {detailsError}
         </p>
         <button
           onClick={() => dispatch(fetchApplicationById(id))}
-          className="mt-3 text-sm font-semibold text-red-700 hover:underline"
+          className="mt-3 text-sm font-semibold text-red-700 hover:underline dark:text-red-300"
         >
           Try Again
         </button>
@@ -76,12 +75,12 @@ function ApplicationDetails() {
   if (!applicationDetails) {
     return (
       <div className="py-10 text-center">
-        <h2 className="text-lg font-semibold text-gray-900">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
           Application not found
         </h2>
         <Link
           to="/applications"
-          className="mt-4 inline-block text-sm font-medium text-indigo-600 hover:underline"
+          className="mt-4 inline-block text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
         >
           Back to applications
         </Link>
@@ -109,27 +108,30 @@ function ApplicationDetails() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <Link
         to="/applications"
-        className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-indigo-600"
+        className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400"
       >
         <ArrowLeft size={18} />
         Back to applications
       </Link>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-colors dark:border-gray-700 dark:bg-gray-800">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               {application.company}
             </h1>
-            <p className="mt-1 text-gray-500">{application.role}</p>
+            <p className="mt-1 text-gray-500 dark:text-gray-400">
+              {application.role}
+            </p>
           </div>
 
           <span
             className={`w-fit rounded-full px-3 py-1.5 text-sm font-semibold capitalize ${
-              statusStyles[application.status] || "bg-gray-100 text-gray-700"
+              statusStyles[application.status] ||
+              "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
             }`}
           >
             {application.status}
@@ -141,7 +143,7 @@ function ApplicationDetails() {
             href={application.jobUrl}
             target="_blank"
             rel="noreferrer"
-            className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:underline"
+            className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
           >
             View job posting
             <ExternalLink size={15} />
@@ -149,16 +151,18 @@ function ApplicationDetails() {
         )}
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-5 text-lg font-semibold text-gray-900">
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-colors dark:border-gray-700 dark:bg-gray-800">
+        <h2 className="mb-5 text-lg font-semibold text-gray-900 dark:text-white">
           Application Information
         </h2>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           {details.map((item) => (
             <div key={item.label}>
-              <p className="text-sm text-gray-500">{item.label}</p>
-              <p className="mt-1 font-medium capitalize text-gray-900">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {item.label}
+              </p>
+              <p className="mt-1 font-medium capitalize text-gray-900 dark:text-gray-100">
                 {item.value || "-"}
               </p>
             </div>
@@ -166,15 +170,17 @@ function ApplicationDetails() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-3 text-lg font-semibold text-gray-900">Notes</h2>
-        <p className="whitespace-pre-wrap text-sm leading-6 text-gray-600">
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-colors dark:border-gray-700 dark:bg-gray-800">
+        <h2 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">
+          Notes
+        </h2>
+        <p className="whitespace-pre-wrap text-sm leading-6 text-gray-600 dark:text-gray-300">
           {application.notes || "No notes added."}
         </p>
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-5 text-lg font-semibold text-gray-900">
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-colors dark:border-gray-700 dark:bg-gray-800">
+        <h2 className="mb-5 text-lg font-semibold text-gray-900 dark:text-white">
           Status History
         </h2>
 
@@ -185,15 +191,15 @@ function ApplicationDetails() {
                 <div className="flex flex-col items-center">
                   <span className="h-3 w-3 rounded-full bg-indigo-600" />
                   {index !== application.statusHistory.length - 1 && (
-                    <span className="mt-1 h-full w-px bg-gray-200" />
+                    <span className="mt-1 h-full w-px bg-gray-200 dark:bg-gray-600" />
                   )}
                 </div>
 
                 <div className="pb-2">
-                  <p className="font-medium capitalize text-gray-900">
+                  <p className="font-medium capitalize text-gray-900 dark:text-white">
                     {entry.status}
                   </p>
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                     {formatDate(
                       entry.changedAt || entry.date || entry.timestamp
                     )}
@@ -203,7 +209,7 @@ function ApplicationDetails() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             No status history available.
           </p>
         )}

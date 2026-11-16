@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -23,11 +22,11 @@ const statuses = [
 ];
 
 const statusStyles = {
-    wishlist: "bg-gray-100 text-gray-700",
-    applied: "bg-blue-100 text-blue-700",
-    interview: "bg-purple-100 text-purple-700",
-    offer: "bg-green-100 text-green-700",
-    rejected: "bg-red-100 text-red-700",
+    wishlist: "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200",
+    applied: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
+    interview: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300",
+    offer: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300",
+    rejected: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300",
 };
 
 function formatDate(date) {
@@ -95,7 +94,7 @@ function Pipeline() {
 
     if (status === "loading") {
         return (
-            <div className="flex min-h-60 items-center justify-center gap-3 text-gray-500">
+            <div className="flex min-h-60 items-center justify-center gap-3 text-gray-500 dark:text-gray-400">
                 <RefreshCw className="animate-spin" size={20} />
                 Loading pipeline...
             </div>
@@ -104,8 +103,8 @@ function Pipeline() {
 
     if (status === "failed") {
         return (
-            <div className="rounded-xl border border-red-200 bg-white p-6 text-center">
-                <p className="text-red-600">
+            <div className="rounded-xl border border-red-200 bg-white p-6 text-center dark:border-red-900 dark:bg-gray-800">
+                <p className="text-red-600 dark:text-red-400">
                     {error || "Failed to load applications."}
                 </p>
 
@@ -123,15 +122,16 @@ function Pipeline() {
         <div className="min-w-0 space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <h1 className="text-xl font-bold text-gray-800 sm:text-2xl">
+                    <h1 className="text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">
                         Application Pipeline
                     </h1>
-                    <p className="mt-1 text-sm text-gray-500">
+
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                         Track and manage your applications by status.
                     </p>
                 </div>
 
-                <span className="rounded-lg bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700">
+                <span className="rounded-lg bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
                     {data.length} Applications
                 </span>
             </div>
@@ -140,8 +140,8 @@ function Pipeline() {
                 <div
                     className={`flex items-center justify-between rounded-lg p-3 text-sm ${
                         toast.type === "success"
-                            ? "bg-green-50 text-green-700"
-                            : "bg-red-50 text-red-700"
+                            ? "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300"
+                            : "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300"
                     }`}
                 >
                     <span>{toast.message}</span>
@@ -156,23 +156,29 @@ function Pipeline() {
             )}
 
             {data.length === 0 ? (
-                <div className="rounded-xl border border-gray-200 bg-white p-10 text-center">
-                    <Briefcase className="mx-auto mb-3 text-gray-400" size={36} />
-                    <h2 className="font-semibold text-gray-700">
+                <div className="rounded-xl border border-gray-200 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-800">
+                    <Briefcase
+                        className="mx-auto mb-3 text-gray-400"
+                        size={36}
+                    />
+
+                    <h2 className="font-semibold text-gray-700 dark:text-white">
                         No applications yet
                     </h2>
-                    <p className="mt-1 text-sm text-gray-500">
+
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                         Add an application to see it in your pipeline.
                     </p>
+
                     <Link
                         to="/applications"
-                        className="mt-4 inline-block text-sm font-medium text-blue-600 hover:underline"
+                        className="mt-4 inline-block text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
                     >
                         Go to applications
                     </Link>
                 </div>
             ) : (
-                <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                <div className="flex min-w-0 gap-4 overflow-x-auto pb-4">
                     {statuses.map((column) => {
                         const columnApplications = data.filter(
                             (application) => application.status === column.value
@@ -183,21 +189,21 @@ function Pipeline() {
                                 key={column.value}
                                 onDragOver={(event) => event.preventDefault()}
                                 onDrop={() => handleDrop(column.value)}
-                                className="min-w-0 rounded-xl border border-gray-200 bg-gray-50 p-3"
+                                className="w-[280px] min-w-[280px] shrink-0 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900"
                             >
                                 <div className="mb-4 flex items-center justify-between gap-2">
-                                    <h2 className="font-semibold text-gray-700">
+                                    <h2 className="font-semibold text-gray-700 dark:text-gray-200">
                                         {column.label}
                                     </h2>
 
-                                    <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-gray-600">
+                                    <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-200">
                                         {columnApplications.length}
                                     </span>
                                 </div>
 
                                 <div className="space-y-3">
                                     {columnApplications.length === 0 ? (
-                                        <div className="rounded-lg border border-dashed border-gray-300 p-4 text-center text-xs text-gray-400">
+                                        <div className="rounded-lg border border-dashed border-gray-300 p-4 text-center text-xs text-gray-400 dark:border-gray-600 dark:text-gray-500">
                                             No applications
                                         </div>
                                     ) : (
@@ -211,7 +217,7 @@ function Pipeline() {
                                                 onDragEnd={() =>
                                                     setDraggedApplication(null)
                                                 }
-                                                className={`min-w-0 rounded-lg border border-gray-200 bg-white p-3 shadow-sm ${
+                                                className={`min-w-0 rounded-lg border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-700 dark:bg-gray-800 ${
                                                     updatingId === application.id
                                                         ? "opacity-60"
                                                         : "cursor-grab active:cursor-grabbing"
@@ -226,18 +232,18 @@ function Pipeline() {
                                                     <div className="min-w-0 flex-1">
                                                         <Link
                                                             to={`/applications/${application.id}`}
-                                                            className="break-words font-semibold text-gray-800 hover:text-blue-600"
+                                                            className="break-words font-semibold text-gray-800 hover:text-blue-600 dark:text-white dark:hover:text-blue-400"
                                                         >
                                                             {application.company}
                                                         </Link>
 
-                                                        <p className="mt-1 break-words text-sm text-gray-500">
+                                                        <p className="mt-1 break-words text-sm text-gray-500 dark:text-gray-400">
                                                             {application.role}
                                                         </p>
                                                     </div>
                                                 </div>
 
-                                                <div className="mt-3 flex items-center gap-2 text-xs text-gray-500">
+                                                <div className="mt-3 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                                                     <CalendarDays size={13} />
                                                     {formatDate(application.dateApplied)}
                                                 </div>
@@ -246,15 +252,15 @@ function Pipeline() {
                                                     <span
                                                         className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${
                                                             statusStyles[application.status] ||
-                                                            "bg-gray-100 text-gray-700"
+                                                            "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
                                                         }`}
                                                     >
                                                         {column.label}
                                                     </span>
                                                 </div>
 
-                                                <div className="mt-3 border-t border-gray-100 pt-3">
-                                                    <label className="mb-1 block text-xs text-gray-500">
+                                                <div className="mt-3 border-t border-gray-100 pt-3 dark:border-gray-700">
+                                                    <label className="mb-1 block text-xs text-gray-500 dark:text-gray-400">
                                                         Move to
                                                     </label>
 
@@ -267,7 +273,7 @@ function Pipeline() {
                                                                 event.target.value
                                                             )
                                                         }
-                                                        className="w-full min-w-0 rounded-md border border-gray-200 bg-white px-2 py-2 text-xs text-gray-700 outline-none focus:border-blue-500 disabled:opacity-50"
+                                                        className="w-full min-w-0 rounded-md border border-gray-200 bg-white px-2 py-2 text-xs text-gray-700 outline-none focus:border-blue-500 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
                                                     >
                                                         {statuses.map((option) => (
                                                             <option

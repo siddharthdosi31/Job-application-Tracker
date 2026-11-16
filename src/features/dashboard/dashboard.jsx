@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -29,12 +28,10 @@ const Dashboard = () => {
         (state) => state.dashboard
     );
 
-    // Get memoized dashboard statistics
     const stats = useSelector(selectDashboardStats);
     const breakdown = useSelector(selectStatusBreakdown);
     const recentApplications = useSelector(selectRecentApplications);
 
-    // Fetch dashboard applications
     useEffect(() => {
         if (status === "idle") {
             dispatch(fetchDashboardApplications());
@@ -43,18 +40,22 @@ const Dashboard = () => {
 
     // Loading state
     if (status === "loading") {
-        return <div className="p-4 sm:p-6">Loading dashboard...</div>;
+        return (
+            <div className="p-4 text-gray-700 dark:text-gray-200 sm:p-6">
+                Loading dashboard...
+            </div>
+        );
     }
 
     // Error state
     if (status === "failed") {
         return (
             <div className="p-4 sm:p-6">
-                <p className="text-red-600">{error}</p>
+                <p className="text-red-600 dark:text-red-400">{error}</p>
 
                 <button
                     onClick={() => dispatch(fetchDashboardApplications())}
-                    className="mt-3 rounded-lg bg-blue-600 px-4 py-2 text-white"
+                    className="mt-3 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
                 >
                     Retry
                 </button>
@@ -66,10 +67,11 @@ const Dashboard = () => {
     if (status === "succeeded" && stats.total === 0) {
         return (
             <div className="p-4 sm:p-6">
-                <h2 className="text-xl font-semibold">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                     No applications yet
                 </h2>
-                <p className="mt-2 text-gray-500">
+
+                <p className="mt-2 text-gray-500 dark:text-gray-400">
                     Add your first application to see your dashboard statistics.
                 </p>
             </div>
@@ -119,11 +121,11 @@ const Dashboard = () => {
         <div className="w-full min-w-0">
             {/* Dashboard heading */}
             <div className="mb-6">
-                <h1 className="text-xl font-bold text-gray-800 sm:text-2xl">
+                <h1 className="text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">
                     Dashboard
                 </h1>
 
-                <p className="mt-1 text-sm text-gray-500 sm:text-base">
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 sm:text-base">
                     Welcome to your application overview.
                 </p>
             </div>
