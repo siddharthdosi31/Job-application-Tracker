@@ -121,3 +121,13 @@ export const deleteApplication = async (id) => {
 
     return id;
 };
+// Fetch all applications for the dashboard
+export const getAllApplications = async () => {
+  const response = await fetch(`${BASE_URL}/applications`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch dashboard applications");
+  }
+
+  return response.json();
+};
