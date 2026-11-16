@@ -34,7 +34,6 @@ const Dashboard = () => {
     const breakdown = useSelector(selectStatusBreakdown);
     const recentApplications = useSelector(selectRecentApplications);
 
-
     // Fetch dashboard applications
     useEffect(() => {
         if (status === "idle") {
@@ -44,13 +43,13 @@ const Dashboard = () => {
 
     // Loading state
     if (status === "loading") {
-        return <div className="p-6">Loading dashboard...</div>;
+        return <div className="p-4 sm:p-6">Loading dashboard...</div>;
     }
 
     // Error state
     if (status === "failed") {
         return (
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
                 <p className="text-red-600">{error}</p>
 
                 <button
@@ -66,7 +65,7 @@ const Dashboard = () => {
     // Empty state
     if (status === "succeeded" && stats.total === 0) {
         return (
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
                 <h2 className="text-xl font-semibold">
                     No applications yet
                 </h2>
@@ -117,20 +116,20 @@ const Dashboard = () => {
     ];
 
     return (
-        <div className="p-6">
+        <div className="w-full min-w-0">
             {/* Dashboard heading */}
             <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">
+                <h1 className="text-xl font-bold text-gray-800 sm:text-2xl">
                     Dashboard
                 </h1>
 
-                <p className="mt-1 text-gray-500">
+                <p className="mt-1 text-sm text-gray-500 sm:text-base">
                     Welcome to your application overview.
                 </p>
             </div>
 
             {/* Summary cards */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {summaryCards.map((card) => (
                     <SummaryCard
                         key={card.title}
@@ -141,23 +140,27 @@ const Dashboard = () => {
                     />
                 ))}
             </div>
-            {/* Application status breakdown */}
-            <div className="mt-6">
-                <StatusBreakdown
-                    breakdown={breakdown}
-                    total={stats.total}
-                />
+
+            {/* Status breakdown and chart */}
+            <div className="mt-6 grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-2">
+                <div className="min-w-0">
+                    <StatusBreakdown
+                        breakdown={breakdown}
+                        total={stats.total}
+                    />
+                </div>
+
+                <div className="min-w-0">
+                    <ApplicationChart
+                        breakdown={breakdown}
+                        total={stats.total}
+                    />
+                </div>
             </div>
+
             {/* Recent applications */}
-            <div className="mt-6">
+            <div className="mt-6 min-w-0">
                 <RecentApplication applications={recentApplications} />
-            </div>
-            {/* Application chart */}
-            <div className="mt-6">
-                <ApplicationChart
-                    breakdown={breakdown}
-                    total={stats.total}
-                />
             </div>
         </div>
     );

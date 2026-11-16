@@ -43,10 +43,62 @@
         {
           "status": "wishlist",
           "changedAt": "2026-08-07T10:45:00Z"
+        },
+        {
+          "status": "applied",
+          "changedAt": "2026-11-16T06:32:01.659Z"
+        },
+        {
+          "status": "wishlist",
+          "changedAt": "2026-11-16T06:32:07.889Z"
+        },
+        {
+          "status": "applied",
+          "changedAt": "2026-11-16T06:32:50.657Z"
+        },
+        {
+          "status": "wishlist",
+          "changedAt": "2026-11-16T06:32:56.557Z"
+        },
+        {
+          "status": "interview",
+          "changedAt": "2026-11-16T06:33:41.662Z"
+        },
+        {
+          "status": "applied",
+          "changedAt": "2026-11-16T06:33:46.503Z"
+        },
+        {
+          "status": "wishlist",
+          "changedAt": "2026-11-16T06:33:49.385Z"
+        },
+        {
+          "status": "applied",
+          "changedAt": "2026-11-16T06:38:06.306Z"
+        },
+        {
+          "status": "wishlist",
+          "changedAt": "2026-11-16T06:38:08.536Z"
+        },
+        {
+          "status": "applied",
+          "changedAt": "2026-11-16T06:38:11.535Z"
+        },
+        {
+          "status": "wishlist",
+          "changedAt": "2026-11-16T06:38:13.819Z"
+        },
+        {
+          "status": "applied",
+          "changedAt": "2026-11-16T06:38:15.769Z"
+        },
+        {
+          "status": "wishlist",
+          "changedAt": "2026-11-16T06:38:21.943Z"
         }
       ],
       "createdAt": "2026-08-07T10:45:00Z",
-      "updatedAt": "2026-11-15T10:13:14.133Z"
+      "updatedAt": "2026-11-16T06:38:21.943Z"
     },
     {
       "id": 3,

@@ -5,9 +5,7 @@ import ApplicationsList from "../features/applications/ApplicationsList";
 import ApplicationDetails from "../features/applications/ApplicationDetails";
 import Dashboard from "../features/dashboard/dashboard";
 
-function Pipeline() {
-  return <h2 className="text-xl font-semibold">Pipeline</h2>;
-}
+import Pipeline from "../features/pipeline/Pipeline";
 
 function AppRoutes() {
   return (

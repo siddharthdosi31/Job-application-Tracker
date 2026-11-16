@@ -5,6 +5,7 @@ import { X, Save } from "lucide-react";
 import { createApplicationById } from "../applicationsSlice";
 import ApplicationForm from "./ApplicationForm";
 import useForm from "../../../hooks/useForm";
+import { fetchDashboardApplications } from "../../dashboard/dashboardSlice";
 
 const initialValues = {
   company: "",
@@ -84,6 +85,9 @@ function CreateApplicationDrawer({ onClose }) {
 
       try {
         await dispatch(createApplicationById(applicationData)).unwrap();
+
+        // Refresh dashboard statistics after successful creation
+        dispatch(fetchDashboardApplications());
 
         // Return to the first page with the default list filters
         setSearchParams({});

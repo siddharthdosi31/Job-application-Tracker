@@ -5,6 +5,7 @@ import { X, Save } from "lucide-react";
 import { fetchApplicationById, updateApplicationById } from "../applicationsSlice";
 import useForm from "../../../hooks/useForm";
 import ApplicationForm from "./ApplicationForm";
+import { fetchDashboardApplications } from "../../dashboard/dashboardSlice";
 
 const emptyValues = {
     company: "",
@@ -95,6 +96,9 @@ function ApplicationDrawer({ applicationId, onClose }) {
                         currentApplication: applicationDetails,
                     })
                 ).unwrap();
+
+                // Refresh dashboard statistics after successful update
+                dispatch(fetchDashboardApplications());
 
                 onClose();
             } catch {

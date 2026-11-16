@@ -26,8 +26,8 @@ const formatDate = (date) => {
 
 const RecentApplication = ({ applications }) => {
     return (
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-            <div className="mb-5 flex items-center justify-between">
+        <div className="min-w-0 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <h2 className="text-lg font-semibold text-gray-800">
                         Recent Applications
@@ -56,12 +56,12 @@ const RecentApplication = ({ applications }) => {
                         <div className="min-w-0">
                             <Link
                                 to={`/applications/${application.id}`}
-                                className="font-medium text-gray-800 hover:text-blue-600"
+                                className="break-words font-medium text-gray-800 hover:text-blue-600"
                             >
                                 {application.company}
                             </Link>
 
-                            <p className="mt-1 text-sm text-gray-500">
+                            <p className="mt-1 break-words text-sm text-gray-500">
                                 {application.role}
                             </p>
                         </div>

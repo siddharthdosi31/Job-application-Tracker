@@ -10,7 +10,7 @@ import {
 } from "./applicationsSlice";
 import ApplicationDrawer from "./components/ApplicationDrawer";
 import CreateApplicationDrawer from "./components/CreateApplicationDrawer";
-
+import { fetchDashboardApplications } from "../dashboard/dashboardSlice";
 const statusStyles = {
     wishlist: "bg-gray-100 text-gray-700",
     applied: "bg-blue-50 text-blue-700",
@@ -194,6 +194,9 @@ function ApplicationsList() {
                 deleteApplicationById(deletingApplication.id)
             ).unwrap();
 
+            // Refresh dashboard statistics after successful deletion
+            dispatch(fetchDashboardApplications());
+
             setDeletingApplication(null);
 
             // If the deleted row was the only row on this page,
@@ -312,8 +315,8 @@ function ApplicationsList() {
                     </button>
                 </div>
             )}
-
-            {/* Applications Table */}
+            
+            {/* Applications Table and Mobile Cards */}
             {data.length === 0 && status !== "loading" ? (
                 <div className="rounded-xl border border-gray-200 bg-white px-6 py-16 text-center">
                     <h3 className="text-lg font-semibold text-gray-900">
@@ -326,7 +329,9 @@ function ApplicationsList() {
             ) : (
                 data.length > 0 && (
                     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                        <div className="overflow-x-auto">
+
+                        {/* Desktop Table: visible on medium screens and above */}
+                        <div className="hidden overflow-x-auto md:block">
                             <table className="w-full min-w-[920px] text-left">
                                 <thead className="border-b border-gray-200 bg-gray-50">
                                     <tr>
@@ -372,9 +377,10 @@ function ApplicationsList() {
 
                                             <td className="px-6 py-4">
                                                 <span
-                                                    className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize ${statusStyles[application.status] ||
+                                                    className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize ${
+                                                        statusStyles[application.status] ||
                                                         "bg-gray-100 text-gray-700"
-                                                        }`}
+                                                    }`}
                                                 >
                                                     {application.status}
                                                 </span>
@@ -391,11 +397,14 @@ function ApplicationsList() {
                                                     application.currency
                                                 )}
                                             </td>
+
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-1">
                                                     <button
                                                         type="button"
-                                                        onClick={() => setEditingApplicationId(application.id)}
+                                                        onClick={() =>
+                                                            setEditingApplicationId(application.id)
+                                                        }
                                                         aria-label={`Edit ${application.company}`}
                                                         title="Edit application"
                                                         className="rounded-lg p-2 text-gray-500 transition hover:bg-indigo-50 hover:text-indigo-600"
@@ -405,7 +414,9 @@ function ApplicationsList() {
 
                                                     <button
                                                         type="button"
-                                                        onClick={() => handleDeleteClick(application)}
+                                                        onClick={() =>
+                                                            handleDeleteClick(application)
+                                                        }
                                                         aria-label={`Delete ${application.company}`}
                                                         title="Delete application"
                                                         className="rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600"
@@ -420,15 +431,103 @@ function ApplicationsList() {
                             </table>
                         </div>
 
-                        {/* Pagination */}
-                        <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-100 px-6 py-4 sm:flex-row">
-                            <p className="text-sm text-gray-500">
+                        {/* Mobile Cards: visible below medium screens */}
+                        <div className="divide-y divide-gray-100 md:hidden">
+                            {data.map((application) => (
+                                <div
+                                    key={application.id}
+                                    className="space-y-3 p-4"
+                                >
+                                    {/* Company and Role */}
+                                    <div className="min-w-0">
+                                        <Link
+                                            to={`/applications/${application.id}`}
+                                            className="break-words text-base font-semibold text-indigo-600 hover:underline"
+                                        >
+                                            {application.company}
+                                        </Link>
+
+                                        <p className="mt-1 break-words text-sm text-gray-600">
+                                            {application.role}
+                                        </p>
+                                    </div>
+
+                                    {/* Status */}
+                                    <div>
+                                        <span
+                                            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize ${
+                                                statusStyles[application.status] ||
+                                                "bg-gray-100 text-gray-700"
+                                            }`}
+                                        >
+                                            {application.status}
+                                        </span>
+                                    </div>
+
+                                    {/* Application Details */}
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="min-w-0">
+                                            <p className="text-xs font-medium text-gray-400">
+                                                Date Applied
+                                            </p>
+                                            <p className="mt-1 break-words text-sm text-gray-700">
+                                                {formatDate(application.dateApplied)}
+                                            </p>
+                                        </div>
+
+                                        <div className="min-w-0">
+                                            <p className="text-xs font-medium text-gray-400">
+                                                Salary Range
+                                            </p>
+                                            <p className="mt-1 break-words text-sm text-gray-700">
+                                                {formatSalary(
+                                                    application.salaryMin,
+                                                    application.salaryMax,
+                                                    application.currency
+                                                )}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="flex justify-end gap-2 border-t border-gray-100 pt-2">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setEditingApplicationId(application.id)
+                                            }
+                                            aria-label={`Edit ${application.company}`}
+                                            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50"
+                                        >
+                                            <Pencil size={16} />
+                                            Edit
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleDeleteClick(application)
+                                            }
+                                            aria-label={`Delete ${application.company}`}
+                                            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
+                                        >
+                                            <Trash2 size={16} />
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Pagination: shared by desktop and mobile */}
+                        <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-100 px-3 py-4 sm:px-6 md:flex-row">
+                            <p className="text-center text-sm text-gray-500">
                                 Showing {(currentPage - 1) * 10 + 1}
                                 {" - "}
                                 {(currentPage - 1) * 10 + data.length} of {total} applications
                             </p>
 
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-wrap items-center justify-center gap-2">
                                 <button
                                     onClick={() => handlePageChange(currentPage - 1)}
                                     disabled={currentPage <= 1}
@@ -444,10 +543,11 @@ function ApplicationsList() {
                                     <button
                                         key={page}
                                         onClick={() => handlePageChange(page)}
-                                        className={`rounded-lg px-3 py-2 text-sm font-medium ${currentPage === page
-                                            ? "bg-indigo-600 text-white"
-                                            : "border border-gray-200 text-gray-600 hover:bg-gray-50"
-                                            }`}
+                                        className={`rounded-lg px-3 py-2 text-sm font-medium ${
+                                            currentPage === page
+                                                ? "bg-indigo-600 text-white"
+                                                : "border border-gray-200 text-gray-600 hover:bg-gray-50"
+                                        }`}
                                     >
                                         {page}
                                     </button>
@@ -465,6 +565,7 @@ function ApplicationsList() {
                     </div>
                 )
             )}
+
             {editingApplicationId !== null && (
                 <ApplicationDrawer
                     applicationId={editingApplicationId}

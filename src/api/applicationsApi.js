@@ -1,5 +1,10 @@
 const BASE_URL = "http://localhost:3001";
 const PAGE_LIMIT = 10;
+const CHAOS_MODE = import.meta.env.VITE_CHAOS_MODE === "true";
+
+const shouldSimulateFailure = () => {
+  return CHAOS_MODE && Math.random() < 0.2;
+};
 
 export const getApplications = async ({
   q = "",
@@ -63,7 +68,9 @@ export const updateApplication = async ({
       },
     ];
   }
-
+  if (updates.status && shouldSimulateFailure()) {
+    throw new Error("Chaos Mode: Simulated status update failure. Please try again.");
+  }
   const response = await fetch(`${BASE_URL}/applications/${id}`, {
     method: "PATCH",
     headers: {
@@ -111,15 +118,15 @@ export const createApplication = async (applicationData) => {
 
 // Delete an application
 export const deleteApplication = async (id) => {
-    const response = await fetch(`${BASE_URL}/applications/${id}`, {
-        method: "DELETE",
-    });
+  const response = await fetch(`${BASE_URL}/applications/${id}`, {
+    method: "DELETE",
+  });
 
-    if (!response.ok) {
-        throw new Error("Failed to delete application");
-    }
+  if (!response.ok) {
+    throw new Error("Failed to delete application");
+  }
 
-    return id;
+  return id;
 };
 // Fetch all applications for the dashboard
 export const getAllApplications = async () => {
